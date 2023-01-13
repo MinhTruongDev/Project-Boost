@@ -10,12 +10,14 @@ public class Movement : MonoBehaviour
     float horizontalThrustForce = 10f;
 
     Rigidbody _rigidbody;
+    AudioSource _audioSource;
 
 
     // Start is called before the first frame update
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
+        _audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -29,7 +31,11 @@ public class Movement : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Space))
         {
-            _rigidbody.AddRelativeForce(Vector3.up * verticalThrustForce * Time.deltaTime);
+            if(_audioSource.isPlaying != true)
+            {
+                _audioSource.Play(); 
+            }            
+            _rigidbody.AddRelativeForce(Vector3.up * verticalThrustForce * Time.deltaTime);                       
             Debug.Log(Vector3.up * verticalThrustForce * Time.deltaTime);
         }
     }
@@ -47,8 +53,10 @@ public class Movement : MonoBehaviour
 
     void RotateRocket(float horizontalInput)
     {
+        _rigidbody.freezeRotation = true; //freeze rotation to rotate rocket manually
         transform.Rotate(Vector3.forward * horizontalInput * Time.deltaTime,Space.Self);
         Debug.Log(Vector3.forward * horizontalInput * Time.deltaTime);
+        _rigidbody.freezeRotation = false; // unfreeze after rotating the rocket so the physic system can take over
     }
 
 }

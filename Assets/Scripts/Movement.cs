@@ -31,13 +31,16 @@ public class Movement : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Space))
         {
-            if(_audioSource.isPlaying != true)
+            if(!_audioSource.isPlaying)
             {
                 _audioSource.Play(); 
-            }            
+            }                        
             _rigidbody.AddRelativeForce(Vector3.up * verticalThrustForce * Time.deltaTime);                       
-            Debug.Log(Vector3.up * verticalThrustForce * Time.deltaTime);
+            //Debug.Log(Vector3.up * verticalThrustForce * Time.deltaTime);
         }
+        else
+            _audioSource.Stop();
+
     }
     void ProcessRotation()
     {
@@ -55,7 +58,7 @@ public class Movement : MonoBehaviour
     {
         _rigidbody.freezeRotation = true; //freeze rotation to rotate rocket manually
         transform.Rotate(Vector3.forward * horizontalInput * Time.deltaTime,Space.Self);
-        Debug.Log(Vector3.forward * horizontalInput * Time.deltaTime);
+        //Debug.Log(Vector3.forward * horizontalInput * Time.deltaTime);
         _rigidbody.freezeRotation = false; // unfreeze after rotating the rocket so the physic system can take over
     }
 

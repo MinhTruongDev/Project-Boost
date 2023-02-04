@@ -4,23 +4,25 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-    [SerializeField]
-    float verticalThrustForce = 150f;
-    [SerializeField]
-    float horizontalThrustForce = 10f;
+    //PARAMETERS
+    [SerializeField] float verticalThrustForce = 150f;
+    [SerializeField] float horizontalThrustForce = 10f;
+    [SerializeField] AudioClip mainEngine;
 
+    //CACHE - references for readability or speed
     Rigidbody _rigidbody;
     AudioSource _audioSource;
 
+    //STATE - private instance (member) variables
 
-    // Start is called before the first frame update
+    
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
         _audioSource = GetComponent<AudioSource>();
     }
 
-    // Update is called once per frame
+    
     void Update()
     {
         ProcessThurst();
@@ -33,7 +35,7 @@ public class Movement : MonoBehaviour
         {
             if(!_audioSource.isPlaying)
             {
-                _audioSource.Play(); 
+                _audioSource.PlayOneShot(mainEngine);
             }                        
             _rigidbody.AddRelativeForce(Vector3.up * verticalThrustForce * Time.deltaTime);                       
             //Debug.Log(Vector3.up * verticalThrustForce * Time.deltaTime);

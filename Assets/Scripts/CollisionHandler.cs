@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,28 +6,64 @@ using UnityEngine.SceneManagement;
 
 public class CollisionHandler : MonoBehaviour
 {
-    [SerializeField]
-    float delayTime = 1f;
+    //PARAMETERS
+    [SerializeField] float delayTime = 1f;
+    [SerializeField] AudioClip[] _audioClips;
 
+    //CACHE - references for readability or speed
+    AudioSource _audioSource;
+
+    //STATE - private instance (member) variables
     private int currentSceneIndex;
 
+    void Start()
+    {
+        _audioSource = GetComponent<AudioSource>();
+    }
     void OnCollisionEnter(Collision other)
     {
         switch (other.gameObject.tag)
         {
-            case "Finish":
-                InvokeMethod("LoadNextLevel", delayTime);
+            case "Success":
+                InvokeMethod("LoadNextLevel", delayTime, other.gameObject.tag);
                 break;
             case "Friendly":
                 Debug.Log("Friendly");
                 break;
-            default:
-                InvokeMethod("ReloadScene", delayTime);                
+            default:                
+                InvokeMethod("ReloadScene", delayTime, other.gameObject.tag);
                 break;
         }
     }
-    void InvokeMethod(string methodName, float delayTime)
+
+    private void PlayAudio(string objectTag)
     {
+        switch(objectTag)
+        {
+            case "Success":
+                if (_audioSource.isPlaying && _audioSource.clip == _audioClips[1]) break;
+                else
+                {
+                    _audioSource.clip = _audioClips[0];
+                    _audioSource.Play();
+                    break;
+                }
+            default:
+                if (_audioSource.isPlaying && _audioSource.clip == _audioClips[0]) break;
+                else
+                {
+                    _audioSource.clip = _audioClips[1];
+                    _audioSource.Play();
+                    break;
+                }
+                
+        }
+        
+    }
+
+    void InvokeMethod(string methodName, float delayTime ,string objectTag)
+    {
+        PlayAudio(objectTag);
         GetComponent<Movement>().enabled = false;
         Invoke(methodName, delayTime);
     }

@@ -15,55 +15,49 @@ public class CollisionHandler : MonoBehaviour
 
     //STATE - private instance (member) variables
     private int currentSceneIndex;
-
+    private bool isTransitioning = false;
     void Start()
     {
         _audioSource = GetComponent<AudioSource>();
     }
     void OnCollisionEnter(Collision other)
     {
-        switch (other.gameObject.tag)
+        if (!isTransitioning)
         {
-            case "Success":
-                InvokeMethod("LoadNextLevel", delayTime, other.gameObject.tag);
-                break;
-            case "Friendly":
-                Debug.Log("Friendly");
-                break;
-            default:                
-                InvokeMethod("ReloadScene", delayTime, other.gameObject.tag);
-                break;
+            switch (other.gameObject.tag)
+            {
+                case "Success":
+                    InvokeMethod("LoadNextLevel", delayTime, other.gameObject.tag);
+                    break;
+                case "Friendly":
+                    Debug.Log("Friendly");
+                    break;
+                default:
+                    InvokeMethod("ReloadScene", delayTime, other.gameObject.tag);
+                    break;
+            }
         }
     }
 
     private void PlayAudio(string objectTag)
     {
-        switch(objectTag)
+        switch (objectTag)
         {
             case "Success":
-                if (_audioSource.isPlaying && _audioSource.clip == _audioClips[1]) break;
-                else
-                {
-                    _audioSource.clip = _audioClips[0];
-                    _audioSource.Play();
-                    break;
-                }
+                _audioSource.clip = _audioClips[0];
+                _audioSource.Play();
+                break;
             default:
-                if (_audioSource.isPlaying && _audioSource.clip == _audioClips[0]) break;
-                else
-                {
-                    _audioSource.clip = _audioClips[1];
-                    _audioSource.Play();
-                    break;
-                }
-                
+                _audioSource.clip = _audioClips[1];
+                _audioSource.Play();
+                break;
         }
-        
     }
 
-    void InvokeMethod(string methodName, float delayTime ,string objectTag)
+    void InvokeMethod(string methodName, float delayTime, string objectTag)
     {
-        PlayAudio(objectTag);
+        isTransitioning = true;
+        PlayAudio(objectTag);        
         GetComponent<Movement>().enabled = false;
         Invoke(methodName, delayTime);
     }

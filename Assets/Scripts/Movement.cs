@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+
+
 
 public class Movement : MonoBehaviour
 {
@@ -25,75 +28,103 @@ public class Movement : MonoBehaviour
 
     void Update()
     {
-        ProcessThurst();
-        ProcessRotation();
+        //ProcessThurst();
+        //ProcessRotation();
     }
 
-    void ProcessThurst()
+    //void ProcessThurst()
+    //{
+    //    if (Input.GetKey(KeyCode.Space))
+    //    {
+    //        StartThrusting();
+    //    }
+    //    else
+    //    {
+    //        StopThrusting();
+    //    }
+    //}
+    //void ProcessRotation()
+    //{
+    //    if (Input.GetKey(KeyCode.D))
+    //    {
+    //        RotateRight();
+    //    }
+    //    else if (Input.GetKey(KeyCode.A))
+    //    {
+    //        RotateLeft();
+    //    }
+    //    else
+    //    {
+    //        StopRotating();
+    //    }
+    //}
+    public void StartThrusting(InputAction.CallbackContext context)
     {
-        if (Input.GetKey(KeyCode.Space))
+        Debug.Log("Thrusting!");
+        if (context.performed)
         {
-            StartThrusting();
+            _rigidbody.AddRelativeForce(Vector3.up * verticalThrustForce * Time.deltaTime);
+            if (!_audioSource.isPlaying)
+            {
+                _audioSource.PlayOneShot(mainEngine);
+            }
+            if (!EngineParticle[0].isPlaying)
+            {
+                EngineParticle[0].Play();// EngineParticle[0] = Main Engine Particle
+            }
         }
-        else
+        else if (context.canceled)
         {
             StopThrusting();
         }
-    }
-    void ProcessRotation()
-    {
-        if (Input.GetKey(KeyCode.D))
-        {
-            RotateRight();
-        }
-        else if (Input.GetKey(KeyCode.A))
-        {
-            RotateLeft();
-        }
-        else
-        {
-            StopRotating();
-        }
-    }
-    private void StartThrusting()
-    {
-        _rigidbody.AddRelativeForce(Vector3.up * verticalThrustForce * Time.deltaTime);
-        if (!_audioSource.isPlaying)
-        {
-            _audioSource.PlayOneShot(mainEngine);
-        }
-        if (!EngineParticle[0].isPlaying)
-        {
-            EngineParticle[0].Play();// EngineParticle[0] = Main Engine Particle
-        }
+
     }
 
-    private void StopThrusting()
+    public void StopThrusting()
     {
+        Debug.Log("Not Thrusting!");
         _audioSource.Stop();
         EngineParticle[0].Stop();
     }
 
-    private void RotateRight()
+    public void RotateRight(InputAction.CallbackContext context)
     {
-        RotateRocket(-horizontalThrustForce);
-        if (!EngineParticle[2].isPlaying) // EngineParticle[2] = Left Thruster Particle
+        Debug.Log("Right!");
+        if (context.performed)
         {
-            EngineParticle[2].Play();
+            RotateRocket(-horizontalThrustForce);
+            if (!EngineParticle[2].isPlaying) // EngineParticle[2] = Left Thruster Particle
+            {
+                EngineParticle[2].Play();
+            }
+        }
+        else if (context.canceled)
+        {
+            StopRotating();
+        }
+
+    }
+
+    public void RotateLeft(InputAction.CallbackContext context)
+    {
+        Debug.Log("Left!");
+        if (context.performed)
+        {
+            RotateRocket(horizontalThrustForce);
+            if (!EngineParticle[1].isPlaying) // EngineParticle[1] = Right Thruster Particle
+            {
+                EngineParticle[1].Play();
+            }
+        }
+        else if (context.canceled)
+        {
+            StopRotating();
         }
     }
 
-    private void RotateLeft()
+    public void StopRotating()
     {
-        RotateRocket(horizontalThrustForce);
-        if (!EngineParticle[1].isPlaying) // EngineParticle[1] = Right Thruster Particle
-        {
-            EngineParticle[1].Play();
-        }
-    }
-    
-    private void StopRotating()
-    {
+        Debug.Log("Not Rotating!");
         EngineParticle[1].Stop();
         EngineParticle[2].Stop();
     }

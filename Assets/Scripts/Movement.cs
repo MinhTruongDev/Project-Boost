@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,70 +14,92 @@ public class Movement : MonoBehaviour
     [SerializeField] AudioClip mainEngine;
     [SerializeField] ParticleSystem[] EngineParticle;
 
+
     //CACHE - references for readability or speed
     Rigidbody _rigidbody;
     AudioSource _audioSource;
+    InputManager inputManager;
+
 
     //STATE - private instance (member) variables
-
-    void Start()
+    void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
         _audioSource = GetComponent<AudioSource>();
+        inputManager = GetComponent<InputManager>();
     }
+
 
 
     void Update()
     {
         //ProcessThurst();
         //ProcessRotation();
+        ProcessInput();
     }
 
-    //void ProcessThurst()
+    private void ProcessInput()
+    {
+        if(inputManager.isThrusting)
+        {
+            StartThrusting();
+        }
+        if(inputManager.isRotateLeft)
+        {
+            RotateLeft();
+        }
+        if(inputManager.isRotateRight)
+        {
+            RotateRight();
+        }
+        else
+        {
+            StopRotating();
+            StopThrusting();
+        }
+
+    }
+
+    //public void ProcessThurst()
     //{
-    //    if (Input.GetKey(KeyCode.Space))
+    //    if (Input.GetKeyDown(KeyCode.Space))
     //    {
     //        StartThrusting();
     //    }
-    //    else
+    //    else if (Input.GetKeyUp(KeyCode.Space))
     //    {
     //        StopThrusting();
     //    }
     //}
-    //void ProcessRotation()
+    //public void ProcessRotation()
     //{
-    //    if (Input.GetKey(KeyCode.D))
+    //    if (Input.GetKeyDown(KeyCode.D))
     //    {
     //        RotateRight();
     //    }
-    //    else if (Input.GetKey(KeyCode.A))
+    //    else if (Input.GetKeyDown(KeyCode.A))
     //    {
     //        RotateLeft();
     //    }
-    //    else
+    //    else if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
     //    {
     //        StopRotating();
     //    }
     //}
-    public void StartThrusting(InputAction.CallbackContext context)
+    public void StartThrusting()
     {
         Debug.Log("Thrusting!");
-        if (context.performed)
+
+        _rigidbody.AddRelativeForce(Vector3.up * verticalThrustForce * Time.deltaTime);
+        if (!_audioSource.isPlaying)
         {
-            _rigidbody.AddRelativeForce(Vector3.up * verticalThrustForce * Time.deltaTime);
-            if (!_audioSource.isPlaying)
-            {
-                _audioSource.PlayOneShot(mainEngine);
-            }
-            if (!EngineParticle[0].isPlaying)
-            {
-                EngineParticle[0].Play();// EngineParticle[0] = Main Engine Particle
-            }
+            _audioSource.PlayOneShot(mainEngine);
         }
-        else if (context.canceled)
+        if (!EngineParticle[0].isPlaying)
         {
-            StopThrusting();
+            EngineParticle[0].Play();// EngineParticle[0] = Main Engine Particle
         }
+
 
     }
 
@@ -87,39 +110,29 @@ public class Movement : MonoBehaviour
         EngineParticle[0].Stop();
     }
 
-    public void RotateRight(InputAction.CallbackContext context)
+    public void RotateRight()
     {
         Debug.Log("Right!");
-        if (context.performed)
+
+        RotateRocket(-horizontalThrustForce);
+        if (!EngineParticle[2].isPlaying) // EngineParticle[2] = Left Thruster Particle
         {
-            RotateRocket(-horizontalThrustForce);
-            if (!EngineParticle[2].isPlaying) // EngineParticle[2] = Left Thruster Particle
-            {
-                EngineParticle[2].Play();
-            }
+            EngineParticle[2].Play();
         }
-        else if (context.canceled)
-        {
-            StopRotating();
-        }
+
 
     }
 
-    public void RotateLeft(InputAction.CallbackContext context)
+    public void RotateLeft()
     {
         Debug.Log("Left!");
-        if (context.performed)
+
+        RotateRocket(horizontalThrustForce);
+        if (!EngineParticle[1].isPlaying) // EngineParticle[1] = Right Thruster Particle
         {
-            RotateRocket(horizontalThrustForce);
-            if (!EngineParticle[1].isPlaying) // EngineParticle[1] = Right Thruster Particle
-            {
-                EngineParticle[1].Play();
-            }
+            EngineParticle[1].Play();
         }
-        else if (context.canceled)
-        {
-            StopRotating();
-        }
+
     }
 
     public void StopRotating()

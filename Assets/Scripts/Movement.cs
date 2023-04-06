@@ -2,14 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 
 
 public class Movement : MonoBehaviour
 {
     //PARAMETERS
-    [SerializeField] float verticalThrustForce = 150f;
+    [SerializeField] float verticalThrustForce = 1000f;
     [SerializeField] float horizontalThrustForce = 10f;
     [SerializeField] AudioClip mainEngine;
     [SerializeField] ParticleSystem[] EngineParticle;
@@ -18,7 +17,7 @@ public class Movement : MonoBehaviour
     //CACHE - references for readability or speed
     Rigidbody _rigidbody;
     AudioSource _audioSource;
-    InputManager inputManager;
+    InputControl inputManager;
 
 
     //STATE - private instance (member) variables
@@ -26,12 +25,12 @@ public class Movement : MonoBehaviour
     {
         _rigidbody = GetComponent<Rigidbody>();
         _audioSource = GetComponent<AudioSource>();
-        inputManager = GetComponent<InputManager>();
+        inputManager = GetComponent<InputControl>();
     }
 
 
 
-    void Update()
+    void FixedUpdate()
     {
         //ProcessThurst();
         //ProcessRotation();
@@ -52,11 +51,15 @@ public class Movement : MonoBehaviour
         {
             RotateRight();
         }
-        else
+        else if(!inputManager.isThrusting)
         {
-            StopRotating();
             StopThrusting();
         }
+        else if(!inputManager.isRotateRight || !inputManager.isRotateLeft)
+        {
+            StopRotating();
+        }
+        
 
     }
 
@@ -88,7 +91,7 @@ public class Movement : MonoBehaviour
     //}
     public void StartThrusting()
     {
-        Debug.Log("Thrusting!");
+        Debug.Log("Thrusting!" + Vector3.up * verticalThrustForce * Time.deltaTime);
 
         _rigidbody.AddRelativeForce(Vector3.up * verticalThrustForce * Time.deltaTime);
         if (!_audioSource.isPlaying)
@@ -105,7 +108,7 @@ public class Movement : MonoBehaviour
 
     public void StopThrusting()
     {
-        Debug.Log("Not Thrusting!");
+       Debug.Log("Not Thrusting!");
         _audioSource.Stop();
         EngineParticle[0].Stop();
     }

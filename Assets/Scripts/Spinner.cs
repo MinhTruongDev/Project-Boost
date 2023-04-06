@@ -21,11 +21,11 @@ public class Spinner : MonoBehaviour
     {
         if (Time.time > 35f)
         {
-            transform.Rotate(spinAmountX, spinAmountY, spinAmountZ);
+            transform.Rotate(spinAmountX * Time.deltaTime, spinAmountY * Time.deltaTime, spinAmountZ * Time.deltaTime);
         }
         else if (Time.time <= 35f)
         {
-            transform.Rotate(spinAmountX, -spinAmountY, spinAmountZ);
+            transform.Rotate(-spinAmountX * Time.deltaTime, -spinAmountY * Time.deltaTime, -spinAmountZ * Time.deltaTime);
         }
     }
 }

@@ -2,8 +2,11 @@
 This is a small game I make while learning Unity3D throught online course.
 The game is about controlling a rocket from point A to point B without collide with any obstacle between them.
 
+-Gameplay:
+![337778344_738281588075796_140859813963670771_n](https://user-images.githubusercontent.com/104303855/230402926-8b00d267-ea34-40d5-b1c7-479a5a5c264a.jpg)
+![337408816_1232157334072954_7001893608581154778_n](https://user-images.githubusercontent.com/104303855/230402933-343eaf36-8b27-47b0-a480-1a0fdafded46.jpg)
+![337520959_1250570219229806_2261399307342003560_n](https://user-images.githubusercontent.com/104303855/230402937-55c94de4-37dd-4d32-aa30-7e46e8cbdacd.jpg)
 
-![z4084764246785_016f399df279b4d4695fea7bcc238e12](https://user-images.githubusercontent.com/104303855/216780004-a4a72d16-6172-4610-9be7-f524f4a663c2.jpg)
-![z4084764245118_5315ada754fdedc79ed49e80ae890a0b](https://user-images.githubusercontent.com/104303855/216780005-f1eac5ce-a2bd-4c1f-a72c-5deeda59aeb1.jpg)
-![z4084764244883_747d107d61ff568d297e2e6a41dd8e32](https://user-images.githubusercontent.com/104303855/216780006-14f05071-e951-4d0b-b00a-d70d5cce9bfb.jpg)
-![z4084764241146_f1a2c2d341c80855a7bbc21f44e09420](https://user-images.githubusercontent.com/104303855/216780008-22e5df00-87f9-4406-8845-d27a01a90325.jpg)
+
+https://user-images.githubusercontent.com/104303855/230402939-4aac43c1-0369-4d82-8070-c61bca7fec57.mp4
+
